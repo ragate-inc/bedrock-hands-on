@@ -1,4 +1,3 @@
-
 from langchain_aws import ChatBedrock
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -12,6 +11,7 @@ chat = ChatBedrock(
     model_id="the model id of Amazon Bedrock", # TODO: BedrockのモデルIDを指定して下さい
     model_kwargs={"max_tokens": 800}, # モデルに渡すパラメータを設定します。ここでは生成する最大トークン数を指定しています
     credentials_profile_name='the profile name', # TODO: プロファイル名を指定して下さい : ~/.aws/credentials or ~/.aws/config files. # AWSの認証情報を指定します
+    region_name="us-east-1",
 )
 
 # AIに送信するメッセージを設定します

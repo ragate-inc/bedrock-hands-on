@@ -1,4 +1,3 @@
-
 import streamlit as st
 from langchain_aws import ChatBedrock
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
@@ -12,6 +11,7 @@ chat = ChatBedrock(
     model_kwargs={"max_tokens": 800},  # モデルに渡す追加のパラメータを設定します。ここでは、生成する最大トークン数を指定しています。
     credentials_profile_name='the profile name',  # TODO: プロファイル名を指定して下さい。認証情報が格納されているプロファイルを指定します。例：'default' ~/.aws/credentials or ~/.aws/config files.
     streaming=True,  # ストリーミングモードを有効にします。これにより、応答を逐次的に受け取ることができます。
+    region_name="us-east-1",
 )
 
 # セッション状態にメッセージを保存するためのリストを初期化します。

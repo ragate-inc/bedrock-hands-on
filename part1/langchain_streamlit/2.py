@@ -10,6 +10,7 @@ chat = ChatBedrock(
     model_id="the model id of Amazon Bedrock", # TODO: 利用するBedrockのモデルIDを設定してください
     model_kwargs={"max_tokens": 800}, # モデルに渡すパラメータを設定します。ここでは生成する最大トークン数を指定しています
     credentials_profile_name='the profile name', # TODO: AWSの認証情報が記載されたプロファイル名を設定してください。認証情報は~/.aws/credentials や ~/.aws/config ファイルに記述されています。
+    region_name="us-east-1",
 )
 
 # 生成AIに送信するメッセージを定義します

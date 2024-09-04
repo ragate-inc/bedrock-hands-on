@@ -19,9 +19,10 @@ prompt = ChatPromptTemplate.from_template(
 
 # Amazon Bedrockとやり取りするためのChatBedrockオブジェクトを定義します。
 model = ChatBedrock(
-    model_id="the model id of Amazon Bedrock",  # TODO: BedrockのモデルIDを指定して下さい。例：anthropic.claude-v2
+    model_id="the model id of Amazon Bedrock", # TODO: BedrockのモデルIDを指定して下さい。例：anthropic.claude-v2
     model_kwargs={"max_tokens": 800},  # モデルに渡す追加のパラメータを設定します。ここでは、生成する最大トークン数を指定しています。
     credentials_profile_name='the profile name',  # TODO: プロファイル名を指定して下さい。認証情報が格納されているプロファイルを指定します。例：'default' ~/.aws/credentials or ~/.aws/config files.
+    region_name="us-east-1",
 )
 
 # 検索、プロンプト作成、LLM呼び出し、結果取得の一連の流れを定義します。

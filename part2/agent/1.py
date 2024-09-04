@@ -43,9 +43,10 @@ tools = [
 
 # チャットモデルの設定
 chat = ChatBedrock(
-    model_id="the model id of Amazon Bedrock",  # TODO: BedrockのモデルIDを指定して下さい。例：anthropic.claude-v2
+    model_id="the model id of Amazon Bedrock", # TODO: BedrockのモデルIDを指定して下さい。例：anthropic.claude-v2
     model_kwargs={"max_tokens": 1500},  # モデルに渡す追加のパラメータ。ここでは、生成する最大トークン数を指定しています。
     credentials_profile_name='the profile name',  # TODO: プロファイル名を指定して下さい。認証情報が格納されているプロファイルを指定します。例：'default' ~/.aws/credentials or ~/.aws/config files.
+    region_name="us-east-1",
 )
 
 # エージェントの設定
