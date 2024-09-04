@@ -9,6 +9,8 @@ from langchain_core.runnables import RunnablePassthrough
 retriever = AmazonKnowledgeBasesRetriever(
     knowledge_base_id="the knowledge bases id",  # TODO: ここにナレッジベースIDを指定してください。例：'abcd-1234'
     retrieval_config={"vectorSearchConfiguration": {"numberOfResults": 10}},  # 検索の設定。ここでは、最大10件の結果を取得するように設定しています。
+    credentials_profile_name='the profile name', # TODO: プロファイル名を指定して下さい。認証情報が格納されているプロファイルを指定します。例：'default' ~/.aws/credentials or ~/.aws/config files.
+    region_name="us-east-1"
 )
 
 # チャットボットが回答を生成するためのプロンプトテンプレートを定義します。
