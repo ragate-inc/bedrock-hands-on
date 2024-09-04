@@ -47,3 +47,16 @@ aws configure
   Default region name [None]: us-east-1
   Default output format [None]: yaml
 ```
+
+## OpenSearch Kibana コマンド
+
+```shell
+# インデックス一覧
+GET /_cat/indices
+
+# マッピング情報出力
+GET /bedrock-knowledge-base-default-index/_mappings
+
+# 全件検索
+GET /bedrock-knowledge-base-default-index/_search
+```
