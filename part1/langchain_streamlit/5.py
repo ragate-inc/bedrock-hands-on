@@ -4,70 +4,73 @@ from langchain_community.chat_message_histories import DynamoDBChatMessageHistor
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-# タイトル
+# ページに表示するタイトルを設定します。
 st.title("Amazon Bedrock")
 
-# セッションIDを定義
+# セッションIDを定義します。セッションIDは、各ユーザーのチャット履歴を区別するために使用されます。
 if "session_id" not in st.session_state:
     st.session_state.session_id = "my_session_id"
 
-# セッションに履歴を定義
+# チャット履歴をAmazon DynamoDBに保存するためのDynamoDBChatMessageHistoryオブジェクトを定義します。
 if "history" not in st.session_state:
     st.session_state.history = DynamoDBChatMessageHistory(
-        table_name="Amazon DynamoDB Table Name here", # TODO: Amazon DynamoDBのテーブル名を指定
+        table_name="Amazon DynamoDB Table Name here",  # TODO: Amazon DynamoDBのテーブル名を指定してください。例：'chat_history'
         session_id=st.session_state.session_id
     )
 
-# セッションにChainを定義
+# チャットボットの処理を行うChainオブジェクトを定義します。
 if "chain" not in st.session_state:
-    # プロンプトを生成
+    # プロンプトを定義します。プロンプトは、AIがどのように応答するかを制御するために使用されます。
+    # ここでは、AIの役割を「質問に誠実かつ明確に答えること」と設定し、過去のメッセージと現在のメッセージをプレースホルダーとして使用しています。
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", "あなたの役割は、質問に誠実かつ明確に答えることです。"),
-            MessagesPlaceholder(variable_name="messages"),
-            MessagesPlaceholder(variable_name="human_message"),
+            MessagesPlaceholder(variable_name="messages"),  # 過去のメッセージのプレースホルダー
+            MessagesPlaceholder(variable_name="human_message"),  # 現在のメッセージのプレースホルダー
         ]
     )
 
-    # ChatBedrockを定義
+    # Amazon Bedrockとやり取りするためのChatBedrockオブジェクトを定義します。
     chat = ChatBedrock(
-        model_id="the model id of Amazon Bedrock", # TODO: BedrockのモデルIDを指定して下さい
-        model_kwargs={"max_tokens": 800},
-        credentials_profile_name='the profile name', # TODO: プロファイル名を指定して下さい : ~/.aws/credentials or ~/.aws/config files.
-        streaming=True,
+        model_id="the model id of Amazon Bedrock",  # TODO: BedrockのモデルIDを指定して下さい。例：anthropic.claude-v2
+        model_kwargs={"max_tokens": 800},  # モデルに渡す追加のパラメータを設定します。ここでは、生成する最大トークン数を指定しています。
+        credentials_profile_name='the profile name',  # TODO: プロファイル名を指定して下さい。認証情報が格納されているプロファイルを指定します。例：'default' ~/.aws/credentials or ~/.aws/config files.
+        streaming=True,  # ストリーミングモードを有効にします。これにより、応答を逐次的に受け取ることができます。
     )
 
-    # Chainを生成
+    # プロンプトとChatBedrockオブジェクトを組み合わせて、Chainオブジェクトを生成します。
     chain = prompt | chat
     st.session_state.chain = chain
 
-# 履歴クリアボタンを画面表示
+# "履歴クリア"ボタンを表示し、クリックされた場合はチャット履歴をクリアします。
 if st.button("履歴クリア"):
     st.session_state.history.clear()
 
-# メッセージを画面表示
+# 過去のメッセージをチャット画面に表示します。
 for message in st.session_state.history.messages:
     with st.chat_message(message.type):
         st.markdown(message.content)
 
-# チャット入力欄を定義
+# ユーザーがチャットで入力したテキストを取得します。
 if prompt := st.chat_input("質問してください。"):
-    # ユーザーの入力をメッセージに追加
+    # ユーザーの入力をチャット画面に表示します。
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # モデルの呼び出しと結果の画面表示
+    # Chainオブジェクトを使って、AIに回答を生成させます。
     with st.chat_message("assistant"):
+        # stream()メソッドを使って、ストリーミングモードでモデルを実行します。
+        # これにより、応答が逐次的に表示されます。
         response = st.write_stream(
             st.session_state.chain.stream(
                 {
-                    "messages": st.session_state.history.messages,
-                    "human_message": [HumanMessage(content=prompt)],
+                    "messages": st.session_state.history.messages,  # 過去のメッセージを渡します。
+                    "human_message": [HumanMessage(content=prompt)],  # ユーザーの入力を渡します。
                 },
-                config={"configurable": {"session_id": st.session_state.session_id}},
+                config={"configurable": {"session_id": st.session_state.session_id}},  # セッションIDを渡します。
             )
         )
 
-    # 履歴に追加
+    # ユーザーの入力とAIの応答をチャット履歴に追加します。
     st.session_state.history.add_user_message(prompt)
     st.session_state.history.add_ai_message(response)
