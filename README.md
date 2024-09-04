@@ -7,8 +7,8 @@
 pip install -r ./part1/langchain_streamlit/requirements.txt
 
 # run langchain_streamlit
-streamlit run ./part1/langchain_streamlit/1.py --server.port 8080
-streamlit run ./part1/langchain_streamlit/2.py --server.port 8080
+python3 ./part1/langchain_streamlit/1.py
+python3 ./part1/langchain_streamlit/2.py
 streamlit run ./part1/langchain_streamlit/3.py --server.port 8080
 streamlit run ./part1/langchain_streamlit/4.py --server.port 8080
 streamlit run ./part1/langchain_streamlit/5.py --server.port 8080
